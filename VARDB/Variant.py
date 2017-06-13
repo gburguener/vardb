@@ -7,26 +7,25 @@ Created on Wed May 24 17:31:20 2017
 
 import os
 import sys
-from peewee import *
+from peewee import Model, ForeignKeyField, IntegerField, CharField, DateField,\
+    FloatField
+from VARDB.VariantCollection import VariantCollection
+from VARDB import mysql_db
 
-sys.path.append("/home/gburguener/Documentos/Academico/WORK_UBA/Pipelines/vardb/")
 
-from  VARDB.VariantCollection import *
+
         
 
 class Variant(Model):
-    variant_collection =  ForeignKeyField(VariantCollection, related_name='variants', 
-                                          db_column="variant_collection_fk") 
-  
     pos = IntegerField()
     gene = CharField()
     gene_pos = IntegerField()
     contig = CharField()
-    description = CharField()
-    modified_date = DateField()
+    description = CharField()    
+    ref_organism = CharField()
     ref = CharField()
-    genotype = CharField()
-    genotype_qual = FloatField()
+
+    modified_date = DateField()
 
     class Meta:
         database = mysql_db

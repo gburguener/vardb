@@ -7,16 +7,16 @@ Created on Wed May 24 18:45:46 2017
 
 import os
 import sys
-from peewee import *
+from peewee import Model, ForeignKeyField, CharField, BooleanField, IntegerField
+from VARDB.Variant import Variant
+from VARDB import mysql_db
+from VARDB.Allele import Allele
 
-sys.path.append("/home/gburguener/Documentos/Academico/WORK_UBA/Pipelines/vardb/")
 
-from  VARDB.Allele import *
 
-mysql_db = MySQLDatabase('vardb', user='root', passwd='root')
 
 class Effect(Model):
-    allele =  ForeignKeyField(Variant, related_name='effects', 
+    allele =  ForeignKeyField(Allele, related_name='effects', 
                                           db_column="allele_fk")  
     
     transcript = CharField()
@@ -32,4 +32,4 @@ class Effect(Model):
         
         
 if __name__ == '__main__':
-    Allele.create_table()
+    Effect.create_table()
