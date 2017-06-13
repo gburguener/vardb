@@ -6,11 +6,12 @@ Created on Wed May 24 17:02:26 2017
 """
 
 from peewee import *
+from VARDB import mysql_db
 
-mysql_db = MySQLDatabase('vardb', user='root', passwd='root')
+
 
 class VariantCollection(Model):
-    ref = CharField()
+    ref_organism = CharField()
     sample = CharField()
     description = CharField()    
     modified_date = DateField()

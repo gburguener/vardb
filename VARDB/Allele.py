@@ -8,21 +8,19 @@ Created on Wed May 24 17:43:43 2017
 
 import os
 import sys
-from peewee import *
+from peewee import ForeignKeyField, Model, CharField, FloatField
+from VARDB.Variant import Variant
+from VARDB import mysql_db
 
-sys.path.append("/home/gburguener/Documentos/Academico/WORK_UBA/Pipelines/vardb/")
 
-from  VARDB.Variant import *
 
-mysql_db = MySQLDatabase('vardb', user='root', passwd='root')
 
 class Allele(Model):
     variant =  ForeignKeyField(Variant, related_name='alleles', 
                                           db_column="variant_fk")  
     alt = CharField()
        
-    qual = FloatField()
-    evidence = CharField()
+  
     
     class Meta:
         database = mysql_db

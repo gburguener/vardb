@@ -44,9 +44,9 @@ class SnpeffEffect():
     def read(cls,ann_str):
         
         aa_pos,aa_len = (None,None)
-        (alt, effects, impact, gene, geneid, feature_type, feature_id, transcript_biotype, 
+        (alt, annotation, impact, gene, geneid, feature_type, feature_id, transcript_biotype, 
             rank_div_total, hgvs_c, hgvs_p, c_dna_pos, cds_pos, (aa_pos_aa_len), dist_to_feature, errors) = ann_str.split("|")       
-        effects = effects.split("&")
+        annotation = annotation.split("&")
         if aa_pos_aa_len: 
             aa_pos,aa_len = aa_pos_aa_len.split("/")
             aa_pos = int(aa_pos)
@@ -56,7 +56,7 @@ class SnpeffEffect():
         else: 
             hgvs_p = None
         
-        return SnpeffEffect(alt, effects, impact, gene, geneid, feature_type, feature_id, transcript_biotype, 
+        return SnpeffEffect(alt, annotation, impact, gene, geneid, feature_type, feature_id, transcript_biotype, 
             rank_div_total, hgvs_c, hgvs_p, c_dna_pos, cds_pos, aa_pos, dist_to_feature, errors,aa_len)
 
 class VcfSnpeffIO():
