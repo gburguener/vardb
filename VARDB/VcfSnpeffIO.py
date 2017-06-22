@@ -15,6 +15,12 @@ import hgvs.parser
 class SnpeffEffect():
     hgvsparser = hgvs.parser.Parser()
     
+    def __str__(self):
+        return "Snpeff(%s; %s; %s; %s;)" % (self.geneid,str(self.effects),str(self.hgvs_c), str(self.hgvs_p) if self.hgvs_p else  "" )
+    
+    def __repr__(self):
+        return self.__str__()
+    
     def __init__(self,alt, effects, impact, gene, geneid, feature_type, feature_id, 
                  transcript_biotype, rank_div_total, hgvs_c, hgvs_p, c_dna_pos, 
                  cds_pos, aa_pos, dist_to_feature, errors,
@@ -38,7 +44,16 @@ class SnpeffEffect():
         self.aa_len = aa_len
         if self.hgvs_p:
             self.aa_ref = self.hgvs_p.pos.start.aa
-            self.aa_mut = self.hgvs_p.edit.alt
+            try:
+                if self.hgvs_p.edit.type == "del":
+                    self.aa_mut = "del"    
+                elif self.hgvs_p.edit.type == "dup":
+                    self.aa_mut = "dup"
+                else:
+                    self.aa_mut = self.hgvs_p.edit.alt 
+            except:
+                print self.hgvs_p.edit
+            pass
 
     @classmethod
     def read(cls,ann_str):
