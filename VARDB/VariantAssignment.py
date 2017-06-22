@@ -10,22 +10,22 @@ import os
 import sys
 from peewee import ForeignKeyField, Model, CharField, FloatField
 from VARDB.Variant import Variant
-from VARDB import mysql_db
+from VARDB import sqldb, VARDBBase
 from VARDB.VariantCollection import VariantCollection
 from VARDB.Allele import Allele
 
 
 
 
-class VariantAssignment(Model):
-    variant_collection =  ForeignKeyField(VariantCollection,  
+class VariantAssignment(VARDBBase):
+    variant_collection =  ForeignKeyField(VariantCollection,  related_name='assignments',
                                           db_column="variant_collection_fk") 
     variant =  ForeignKeyField(Variant,  db_column="variant_fk")
     allele =  ForeignKeyField(Allele,  db_column="allele_fk")    
     
     
     class Meta:
-        database = mysql_db
+        database = sqldb
         
         
 if __name__ == '__main__':

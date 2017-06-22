@@ -11,7 +11,9 @@ from VARDB.Effect import Effect
 from VARDB.Allele import DeferredEffect
 from VARDB.VariantAssignment import VariantAssignment
 from VARDB.VariantAnnotation import VariantAnnotation
-from VARDB import sqldb
+from VARDB import sqldb, connect_to_db
+import vcf
+from playhouse.migrate import SqliteMigrator, migrate
 
 
 DeferredEffect.set_model(Effect)
@@ -52,10 +54,17 @@ class DbIO(object):
     tables = [VariantCollection,   Variant,Allele,VariantAssignment,VariantAnnotation,  Effect] 
     
     def create_db(self):
+        sqldb.execute_sql('DROP DATABASE ' + sqldb.database  + ";" )
+        sqldb.execute_sql('CREATE DATABASE ' + sqldb.database + ";" )
         
-        for t in reversed( DbIO.tables):
-            if t.table_exists():
-                t.drop_table()
+#         if Allele.table_exists():
+#             with sqldb.atomic():
+#                 Allele.update(main_effect=None).execute()
+#                 Allele.main_effect
+#                 sqldb.execute_sql('alter table allele drop column main_effect_fk')
+#         for t in reversed( DbIO.tables):
+#             if t.table_exists():
+#                 t.drop_table()
         
         
         for t in DbIO.tables:            
@@ -139,19 +148,25 @@ class DbIO(object):
         vc.save()
          
         for var, effects in variants:
-            
-            self.add_variant(ref_organism, vc, var, effects)
+            with sqldb.atomic() :
+                self.add_variant(ref_organism, vc, var, effects)
             
 
-    def load_vcf(self, vcf, ref_organism, sample=None):
-        with open(vcf) as h:
-            variant = next(vcf.VCFReader(h).iter())
-            if variant.samples.length > 1:
-                raise MultipleSamplesError(vcf, [s.sample for s in variant.samples])
+    def load_vcf(self, vcf_file, ref_organism, sample=None):
+        with open(vcf_file) as h:
+            variant = next(vcf.VCFReader(h))
+            if len(variant.samples) > 1:
+                raise MultipleSamplesError(vcf_file, [s.sample for s in variant.samples])
             if not sample:
                 sample = variant.samples[0].sample
-        self.load_variants(VcfSnpeffIO.parse(vcf), ref_organism, sample)
-        
-        
+        self.load_variants(VcfSnpeffIO.parse(vcf_file), ref_organism, sample)
+
+
+if __name__ == '__main__':    
+    connect_to_db( password="mito")  
+    
+    DbIO().create_db()
+    
+    print "OK"   
         
         

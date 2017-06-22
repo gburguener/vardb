@@ -8,23 +8,29 @@ Created on Wed May 24 17:43:43 2017
 
 import os
 import sys
-from peewee import ForeignKeyField, Model, CharField, FloatField
+from peewee import ForeignKeyField, Model, CharField, FloatField,\
+    DeferredRelation
 from VARDB.Variant import Variant
-from VARDB import mysql_db
+from VARDB import sqldb, VARDBBase
 
 
 
+DeferredEffect = DeferredRelation()
 
-class Allele(Model):
+class Allele(VARDBBase):
+    
     variant =  ForeignKeyField(Variant, related_name='alleles', 
                                           db_column="variant_fk")  
     alt = CharField()
-       
+    main_effect =ForeignKeyField(DeferredEffect,  db_column="main_effect_fk",null=True)
   
     
     class Meta:
-        database = mysql_db
-        
+        database = sqldb
+        indexes = (            
+            (('variant','alt'), True),
+
+        )
         
 if __name__ == '__main__':
     Allele.create_table()

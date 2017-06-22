@@ -16,7 +16,7 @@ class SnpeffEffect():
     hgvsparser = hgvs.parser.Parser()
     
     def __str__(self):
-        return "Snpeff(%s; %s; %s; %s;)" % (self.geneid,str(self.effects),str(self.hgvs_c), str(self.hgvs_p) if self.hgvs_p else  "" )
+        return "Snpeff(%s; %s; %s; %s;)" % (self.geneid,str(self.annotation),str(self.hgvs_c), str(self.hgvs_p) if self.hgvs_p else  "" )
     
     def __repr__(self):
         return self.__str__()
@@ -26,7 +26,7 @@ class SnpeffEffect():
                  cds_pos, aa_pos, dist_to_feature, errors,
                  aa_len):
         self.alt =  alt
-        self.effects = effects
+        self.annotation = effects
         self.impact = impact
         self.gene = gene
         self.geneid = geneid
@@ -42,15 +42,17 @@ class SnpeffEffect():
         self.dist_to_feature = dist_to_feature
         self.errors = errors
         self.aa_len = aa_len
+        if self.hgvs_c:
+            self.gene_pos = hgvs_c.pos.start.base
         if self.hgvs_p:
             self.aa_ref = self.hgvs_p.pos.start.aa
             try:
                 if self.hgvs_p.edit.type == "del":
-                    self.aa_mut = "del"    
+                    self.aa_alt = "del"    
                 elif self.hgvs_p.edit.type == "dup":
-                    self.aa_mut = "dup"
+                    self.aa_alt = "dup"
                 else:
-                    self.aa_mut = self.hgvs_p.edit.alt 
+                    self.aa_alt = self.hgvs_p.edit.alt 
             except:
                 print self.hgvs_p.edit
             pass
@@ -86,9 +88,15 @@ class VcfSnpeffIO():
         
         try:
             variantes = vcf.VCFReader(h)
-            for v in variantes:                
-                yield (v, [SnpeffEffect.read(x) for x in v.INFO["ANN"]] 
-                            if "ANN" in v.INFO else []) 
+            for v in variantes:  
+                effects = [SnpeffEffect.read(x) for x in (v.INFO["ANN"] if "ANN" in v.INFO else []) ] 
+                intergenic = [(i,x) for i,x in enumerate(effects) if "intragenic_variant" in x.annotation ]
+                if intergenic:
+                    i,intergenic =  intergenic[0]     
+                    if  (("upstream_gene_variant" in  effects[0].annotation) 
+                    or ("downstream_gene_variant" in  effects[0].annotation)  )   :
+                        effects = [effects[i]] + effects[:i-1] + effects[i:]
+                yield (v, effects) 
         finally:
             h.close()
     
