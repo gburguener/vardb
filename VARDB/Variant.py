@@ -10,25 +10,30 @@ import sys
 from peewee import Model, ForeignKeyField, IntegerField, CharField, DateField,\
     FloatField
 from VARDB.VariantCollection import VariantCollection
-from VARDB import mysql_db
+from VARDB import sqldb, VARDBBase
+import datetime
 
 
 
         
 
-class Variant(Model):
+class Variant(VARDBBase):
     pos = IntegerField()
-    gene = CharField()
-    gene_pos = IntegerField()
+    gene = CharField(null=True)
+    gene_pos = IntegerField(null=True)
     contig = CharField()
-    description = CharField()    
+    description = CharField(null=True)    
     ref_organism = CharField()
     ref = CharField()
 
-    modified_date = DateField()
+    modified_date = DateField(default=datetime.datetime.now)
 
     class Meta:
-        database = mysql_db
+        indexes = (            
+            (('ref_organism','contig', 'pos'), True),
+
+        )
+        database = sqldb
 
 
 if __name__ == '__main__':

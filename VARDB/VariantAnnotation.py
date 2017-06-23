@@ -10,23 +10,23 @@ import os
 import sys
 
 
-from VARDB import mysql_db
+from VARDB import sqldb, VARDBBase
 from peewee import Model, ForeignKeyField, CharField
 from VARDB.VariantAssignment import VariantAssignment
 
 
 
-class VariantAnnotation(Model):
+class VariantAnnotation(VARDBBase):
     assignment =  ForeignKeyField(VariantAssignment, related_name='annotations', 
                                           db_column="assignment_fk")  
-    source_type = CharField() #DB, prediccion, bibliografia
+    source_type = CharField(choices=["DB", "prediction", "biblio"]) 
     source = CharField()
     prop = CharField()
     value = CharField()
-    description = CharField()
+    description = CharField(null=True)
     
     class Meta:
-        database = mysql_db
+        database = sqldb
         
         
 if __name__ == '__main__':

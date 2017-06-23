@@ -16,6 +16,10 @@ class TestVcfSnpeffIO(unittest.TestCase):
     NC_000962.3     14785   .       T       C       2020.0  .       AC=1;AF=1.00;AN=1;DP=77;FS=0.000;MLEAC=1;MLEAF=1.00;MQ=60.00;QD=26.23;SOR=0.772;ANN=C|missense_variant|MODERATE|Rv0012|Rv0012|transcript|Rv0012|protein_coding|1/1|c.697T>C|p.Cys233Arg|697/789|697/789|233/262||,C|upstream_gene_variant|MODIFIER|Rv0008c|Rv0008c|transcript|Rv0008c|protein_coding||c.-2474A>G|||||2474|,C|upstream_gene_variant|MODIFIER|Rv0010c|Rv0010c|transcript|Rv0010c|protein_coding||c.-1227A>G|||||1227|,C|upstream_gene_variant|MODIFIER|Rv0011c|Rv0011c|transcript|Rv0011c|protein_coding||c.-790A>G|||||790|,C|upstream_gene_variant|MODIFIER|trpG|Rv0013|transcript|Rv0013|protein_coding||c.-129T>C|||||129|,C|downstream_gene_variant|MODIFIER|gyrA|Rv0006|transcript|Rv0006|protein_coding||c.*4967T>C|||||4967|,C|downstream_gene_variant|MODIFIER|Rv0007|Rv0007|transcript|Rv0007|protein_coding||c.*3957T>C|||||3957|WARNING_TRANSCRIPT_NO_START_CODON,C|downstream_gene_variant|MODIFIER|ppiA|Rv0009|transcript|Rv0009|protein_coding||c.*1769T>C|||||1769|,C|downstream_gene_variant|MODIFIER|pknB|Rv0014c|transcript|Rv0014c|protein_coding||c.*805A>G|||||805|,C|downstream_gene_variant|MODIFIER|pknA|Rv0015c|transcript|Rv0015c|protein_coding||c.*2682A>G|||||2682|,C|downstream_gene_variant|MODIFIER|pbpA|Rv0016c|transcript|Rv0016c|protein_coding||c.*3974A>G|||||3974| GT:AD:DP:GQ:PL  1:0,77:77:99:2050,0
     """
     
+    rna = """
+    NC_000962.3    1472362    .    C    T    2123.0    .    AC=1;AF=1.00;AN=1;BaseQRankSum=-1.588;ClippingRankSum=0.000;DP=92;FS=6.426;MLEAC=1;MLEAF=1.00;MQ=59.92;MQRankSum=3.830;QD=23.08;ReadPosRankSum=1.277;SOR=0.148;ANN=T|upstream_gene_variant|MODIFIER|Rv1313c|Rv1313c|transcript|Rv1313c|protein_coding||c.-2857G>A|||||2857|WARNING_TRANSCRIPT_NO_START_CODON,T|upstream_gene_variant|MODIFIER|Rv1314c|Rv1314c|transcript|Rv1314c|protein_coding||c.-2110G>A|||||2110|,T|downstream_gene_variant|MODIFIER|atpC|Rv1311|transcript|Rv1311|protein_coding||c.*4682C>T|||||4682|,T|downstream_gene_variant|MODIFIER|Rv1312|Rv1312|transcript|Rv1312|protein_coding||c.*4231C>T|||||4231|,T|downstream_gene_variant|MODIFIER|murA|Rv1315|transcript|Rv1315|protein_coding||c.*785C>T|||||785|WARNING_TRANSCRIPT_NO_START_CODON,T|downstream_gene_variant|MODIFIER|ogt|Rv1316c|transcript|Rv1316c|protein_coding||c.*4772G>A|||||4772|,T|intragenic_variant|MODIFIER|rrs|Rvnr01|gene_variant|Rvnr01|||n.1472362C>T||||||    GT:AD:DP:GQ:PL    1:6,86:92:99:2153,0
+    """
+    
     upstream = """
     NC_000962.3     34044   .       T       C       1657.0  .       AC=1;AF=1.00;AN=1;DP=57;FS=0.000;MLEAC=1;MLEAF=1.00;MQ=60.00;QD=29.59;SOR=0.841;ANN=C|upstream_gene_variant|MODIFIER|bioF2|Rv0032|transcript|Rv0032|protein_coding||c.-251T>C|||||251|,C|upstream_gene_variant|MODIFIER|acpA|Rv0033|transcript|Rv0033|protein_coding||c.-2563T>C|||||2563|,C|upstream_gene_variant|MODIFIER|Rv0034|Rv0034|transcript|Rv0034|protein_coding||c.-2823T>C|||||2823|,C|upstream_gene_variant|MODIFIER|fadD34|Rv0035|transcript|Rv0035|protein_coding||c.-3215T>C|||||3215|,C|downstream_gene_variant|MODIFIER|Rv0024|Rv0024|transcript|Rv0024|protein_coding||c.*4837T>C|||||4837|WARNING_TRANSCRIPT_NO_START_CODON,C|downstream_gene_variant|MODIFIER|Rv0025|Rv0025|transcript|Rv0025|protein_coding||c.*4437T>C|||||4437|,C|downstream_gene_variant|MODIFIER|Rv0026|Rv0026|transcript|Rv0026|protein_coding||c.*2976T>C|||||2976|WARNING_TRANSCRIPT_NO_START_CODON,C|downstream_gene_variant|MODIFIER|Rv0027|Rv0027|transcript|Rv0027|protein_coding||c.*2538T>C|||||2538|,C|downstream_gene_variant|MODIFIER|Rv0028|Rv0028|transcript|Rv0028|protein_coding||c.*2225T>C|||||2225|,C|downstream_gene_variant|MODIFIER|Rv0029|Rv0029|transcript|Rv0029|protein_coding||c.*890T>C|||||890|WARNING_TRANSCRIPT_NO_START_CODON,C|downstream_gene_variant|MODIFIER|Rv0030|Rv0030|transcript|Rv0030|protein_coding||c.*491T>C|||||491|,C|intergenic_region|MODIFIER|Rv0030-bioF2|Rv0030-Rv0032|intergenic_region|Rv0030-Rv0032|||n.34044T>C||||||        GT:AD:DP:GQ:PL  1:0,56:56:99:1687,0
     """
@@ -63,7 +67,13 @@ class TestVcfSnpeffIO(unittest.TestCase):
         self.assertEqual(14785,variant.POS)
         self.assertEqual(233,effect.aa_pos)
         self.assertEqual("C",effect.aa_ref)
-        self.assertEqual("R",effect.aa_mut)
+        self.assertEqual("R",effect.aa_alt)
+    
+    def test_rna_var(self):
+        _,effects = list(VcfSnpeffIO.parse( 
+            StringIO.StringIO(TestVcfSnpeffIO. VCF_HEADER +  TestVcfSnpeffIO.rna) ))[0]
+        self.assertEqual("intragenic_variant",effects[0].annotation[0])
+        
     
     def test_insertion(self):
         _,effects = list(VcfSnpeffIO.parse( 
@@ -75,7 +85,7 @@ class TestVcfSnpeffIO(unittest.TestCase):
         self.assertEqual(594,effect.aa_pos)
         self.assertEqual("G",effect.aa_ref) 
             # it only asks for G and not GA because if the hgvs_p is an interval, snpeff shows an interval and not the original aa Seq
-        self.assertEqual("AGGAGADATATGATGGTGFAGGAGG",effect.aa_mut)
+        self.assertEqual("AGGAGADATATGATGGTGFAGGAGG",effect.aa_alt)
     
     def test_deletion(self):
         _,effects = list(VcfSnpeffIO.parse( 
@@ -85,7 +95,7 @@ class TestVcfSnpeffIO(unittest.TestCase):
         self.assertEqual(480,effect.aa_pos)
         self.assertEqual("R",effect.aa_ref) 
             # it only asks for R and not RE because if the hgvs_p is an interval, snpeff shows an interval and not the original aa Seq
-        self.assertEqual(None,effect.aa_mut)
+        self.assertEqual("del",effect.aa_alt)
         
 
 

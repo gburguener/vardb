@@ -6,18 +6,23 @@ Created on Wed May 24 17:02:26 2017
 """
 
 from peewee import *
-from VARDB import mysql_db
+from VARDB import sqldb, VARDBBase
+import datetime
 
 
 
-class VariantCollection(Model):
+class VariantCollection(VARDBBase):
     ref_organism = CharField()
     sample = CharField()
-    description = CharField()    
-    modified_date = DateField()
+    description = CharField(null=True)    
+    modified_date = DateField(default=datetime.datetime.now)
 
     class Meta:
-        database = mysql_db 
+        indexes = (            
+            (('ref_organism', 'sample'), True),
+
+        )
+        database = sqldb 
         
         
 if __name__ == '__main__':
