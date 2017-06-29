@@ -5,13 +5,8 @@ Created on Wed May 24 19:27:42 2017
 @author: gburguener
 """
 
-
-import os
-import sys
-
-
 from VARDB import sqldb, VARDBBase
-from peewee import Model, ForeignKeyField, CharField
+from peewee import  ForeignKeyField, CharField
 from VARDB.VariantAssignment import VariantAssignment
 
 

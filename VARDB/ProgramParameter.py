@@ -5,8 +5,8 @@ Created on Wed May 24 17:31:20 2017
 @author: gburguener
 """
 
-from  VARDB.VariantCollection import mysql_db
-from peewee import Model, CharField, DateTimeField, TextField, ForeignKeyField
+from  VARDB.VariantCollection import sqldb
+from peewee import Model, CharField,  ForeignKeyField
 from VARDB.ProgramRun import ProgramRun
         
 
@@ -21,7 +21,7 @@ class ProgramParameter(Model):
     
 
     class Meta:
-        database = mysql_db
+        database = sqldb
 
 
           

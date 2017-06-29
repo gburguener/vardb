@@ -6,13 +6,13 @@ Created on Jun 16, 2017
 
 import Bio.SearchIO as bpsio
 import Bio.AlignIO as bpaio
-import os
+
 from VARDB.ProgramRun import ProgramRun
 from VARDB.Alignment import Alignment
 from VARDB.AlnLine import AlnLine
 from VARDB.AlignmentParam import AlignmentParam
 from VARDB.ProgramParameter import ProgramParameter
-from VARDB import mysql_db
+from VARDB import sqldb
 
 parser_choises = bpsio._ITERATOR_MAP.keys() + bpaio._FormatToIterator.keys()
 
@@ -28,7 +28,7 @@ class Aln2Sql(object):
         first = True
         if file_format in bpsio._ITERATOR_MAP:
             for query_result in bpsio.parse(file_name, file_format) :
-                with mysql_db.atomic():
+                with sqldb.atomic():
                     if first:
                         first = False
                         if hasattr(query_result, "program"):

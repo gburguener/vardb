@@ -5,10 +5,7 @@ Created on Wed May 24 17:43:43 2017
 @author: gburguener
 """
 
-
-import os
-import sys
-from peewee import ForeignKeyField, Model, CharField, FloatField
+from peewee import ForeignKeyField
 from VARDB.Variant import Variant
 from VARDB import sqldb, VARDBBase
 from VARDB.VariantCollection import VariantCollection
@@ -25,8 +22,12 @@ class VariantAssignment(VARDBBase):
     
     
     class Meta:
+        indexes = (
+            (('variant_collection', 'variant','allele'), True),
+
+        )
         database = sqldb
-        
+      
         
 if __name__ == '__main__':
     VariantAssignment.create_table()

@@ -5,10 +5,8 @@ Created on Wed May 24 18:45:46 2017
 @author: gburguener
 """
 
-import os
-import sys
-from peewee import Model, ForeignKeyField, CharField, BooleanField, IntegerField
-from VARDB.Variant import Variant
+
+from peewee import  ForeignKeyField, CharField, BooleanField, IntegerField
 from VARDB import sqldb, VARDBBase
 
 

@@ -8,7 +8,7 @@ Created on Wed May 24 17:31:20 2017
 from peewee import ForeignKeyField, Model, CharField, FloatField
 
 
-from  VARDB.VariantCollection import mysql_db
+from  VARDB.VariantCollection import sqldb
 from VARDB.Alignment import Alignment
  
         
@@ -21,7 +21,7 @@ class AlignmentParam(Model):
     value = FloatField()
     
     class Meta:
-        database = mysql_db
+        database = sqldb
 
 
 if __name__ == '__main__':

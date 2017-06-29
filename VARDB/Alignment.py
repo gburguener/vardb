@@ -8,7 +8,7 @@ Created on Wed May 24 17:31:20 2017
 from peewee import ForeignKeyField, Model, IntegerField
 from VARDB.ProgramRun import ProgramRun
 
-from  VARDB.VariantCollection import mysql_db
+from  VARDB.VariantCollection import sqldb
         
 
 class Alignment(Model):
@@ -18,7 +18,7 @@ class Alignment(Model):
                                           db_column="run_fk") 
     seqs_count = IntegerField(default=1)
     class Meta:
-        database = mysql_db
+        database = sqldb
 
 
 if __name__ == '__main__':

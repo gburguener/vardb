@@ -6,10 +6,8 @@ Created on Wed May 24 17:43:43 2017
 """
 
 
-import os
-import sys
-from peewee import ForeignKeyField, Model, CharField, FloatField,\
-    DeferredRelation
+
+from peewee import ForeignKeyField,  CharField,  DeferredRelation
 from VARDB.Variant import Variant
 from VARDB import sqldb, VARDBBase
 

@@ -3,6 +3,8 @@ Created on Jun 22, 2017
 
 @author: eze
 '''
+
+import vcf
 from VARDB.VariantCollection import VariantCollection
 from VARDB.VcfSnpeffIO import VcfSnpeffIO
 from VARDB.Variant import Variant
@@ -12,11 +14,16 @@ from VARDB.Allele import DeferredEffect
 from VARDB.VariantAssignment import VariantAssignment
 from VARDB.VariantAnnotation import VariantAnnotation
 from VARDB import sqldb, connect_to_db
-import vcf
-from playhouse.migrate import SqliteMigrator, migrate
+
+from VARDB.Alignment import Alignment
+from VARDB.AlignmentParam import AlignmentParam
+from VARDB.AlnLine import AlnLine
+from VARDB.ProgramRun import ProgramRun
+from VARDB.ProgramParameter import ProgramParameter
+from peewee import fn
 
 
-DeferredEffect.set_model(Effect)
+
 
 class VariantCollectionExistsError(Exception):
     
@@ -51,11 +58,12 @@ class DbIO(object):
     classdocs
     '''
     
-    tables = [VariantCollection,   Variant,Allele,VariantAssignment,VariantAnnotation,  Effect] 
+    tables = [VariantCollection, Variant, Allele, VariantAssignment, VariantAnnotation, Effect,
+ ProgramRun, ProgramParameter, Alignment, AlnLine, AlignmentParam] 
     
     def create_db(self):
-        sqldb.execute_sql('DROP DATABASE ' + sqldb.database  + ";" )
-        sqldb.execute_sql('CREATE DATABASE ' + sqldb.database + ";" )
+        sqldb.execute_sql('DROP DATABASE ' + sqldb.database + ";")
+        sqldb.execute_sql('CREATE DATABASE ' + sqldb.database + ";")
         
 #         if Allele.table_exists():
 #             with sqldb.atomic():
@@ -134,7 +142,8 @@ class DbIO(object):
             (VariantCollection.sample == sample) 
             & (VariantCollection.ref_organism == ref_organism)).get().delete_instance(recursive=True)
             
-    
+    def load_csv(self,ref,csv):
+        required = ["CHROM","POS","REF","ALT","TYPE"]
 
     def load_variants(self, variants, ref_organism, sample):
         '''
@@ -161,12 +170,10 @@ class DbIO(object):
                 sample = variant.samples[0].sample
         self.load_variants(VcfSnpeffIO.parse(vcf_file), ref_organism, sample)
 
+    
 
-if __name__ == '__main__':    
-    connect_to_db( password="mito")  
+
     
-    DbIO().create_db()
-    
-    print "OK"   
         
+    
         
