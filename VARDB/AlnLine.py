@@ -5,13 +5,9 @@ Created on Wed May 24 17:31:20 2017
 @author: gburguener
 """
 
-import os
-import sys
 
 from VARDB.Alignment import Alignment
-
-from  VARDB.VariantCollection import VariantCollection
-from VARDB import mysql_db
+from VARDB import sqldb
 from peewee import Model, ForeignKeyField, IntegerField, TextField, CharField
         
 
@@ -26,7 +22,7 @@ class AlnLine(Model):
     name = CharField()
     
     class Meta:
-        database = mysql_db
+        database = sqldb
 
 
 if __name__ == '__main__':

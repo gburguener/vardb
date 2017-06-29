@@ -8,7 +8,7 @@ import unittest
 from VARDB.VcfSnpeffIO import VcfSnpeffIO
 import StringIO
 from VARDB.DbIO import DbIO, VariantCollectionExistsError
-from VARDB import connect_to_db
+from VARDB import connect_to_db, sqldb
 from VARDB.VariantCollection import VariantCollection
 from VARDB.Variant import Variant
 from VARDB.Allele import Allele
@@ -38,12 +38,17 @@ class TestVcfLoad(unittest.TestCase):
             #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  1109_S1_L00
             """
     
-    
+    @classmethod
+    def setUpClass(cls):
+        connect_to_db(database="test",password='mito')
+        db = DbIO()        
+        db.create_db()  
 
     def setUp(self):
-        connect_to_db(password='mito')
+        
+        self.db = DbIO() 
         self.ref_organism, self.sample = ("otest", "stest")
-        self.db = DbIO()  
+    
         if self.db.exists_sample(self.ref_organism, self.sample):
             self.db.delete_sample(self.ref_organism, self.sample)
         if self.db.exists_sample(self.ref_organism, self.sample + "2"):

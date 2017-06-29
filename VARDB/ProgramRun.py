@@ -5,7 +5,7 @@ Created on Wed May 24 17:31:20 2017
 @author: gburguener
 """
 
-from  VARDB.VariantCollection import mysql_db
+from  VARDB.VariantCollection import sqldb
 from peewee import Model, CharField, DateTimeField, TextField
 import datetime
         
@@ -22,7 +22,7 @@ class ProgramRun(Model):
     '''
 
     class Meta:
-        database = mysql_db
+        database = sqldb
 
 
 if __name__ == '__main__':

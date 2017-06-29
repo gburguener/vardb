@@ -10,8 +10,6 @@ hgvs.parser is used to parse http://varnomen.hgvs.org/
 import vcf
 import hgvs.parser
 
-
-
 class SnpeffEffect():
     hgvsparser = hgvs.parser.Parser()
     
