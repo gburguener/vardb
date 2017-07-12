@@ -6,7 +6,7 @@ Created on Jun 29, 2017
 
 import re
 
-from bottle import route, run, template, get, request, hook
+from bottle import  run, template, get, request, hook, error
 from VARDB import connect_to_db, sqldb
 from VARDB.Variant import Variant
 from VARDB.VariantAssignment import VariantAssignment
@@ -53,7 +53,7 @@ def _close_db():
 @error(404)
 def error404(error):    
     desc = request.url + " invalid url"    
-    return des
+    return desc
 
 connect_to_db("test",  password="mito")
 regepx = r"[_ \-]"
