@@ -6,15 +6,54 @@ Created on Jun 29, 2017
 
 import re
 
-from bottle import route, run, template, get, request
-from VARDB import connect_to_db
+from bottle import  run, template, get, request, hook, error
+from VARDB import connect_to_db, sqldb
 from VARDB.Variant import Variant
 from VARDB.VariantAssignment import VariantAssignment
 from VARDB.VariantCollection import VariantCollection
 from VARDB.Query.QueryBuilder import QueryBuilder, SameFilter, SubtractFilter,\
     EffectFilter, VariantFilter
 
+from gevent import monkey  # @UnresolvedImport
+from beaker.middleware import SessionMiddleware
+import bottle
 
+monkey.patch_all()
+
+bapp = bottle.app()
+session_opts = {
+    'session.cookie_expires': True,
+    'session.encrypt_key': 'please use a random key and keep it secret!',
+    'session.httponly': True,
+    'session.timeout': 3600 * 24,  # 1 day
+    'session.type': 'cookie',
+    'session.validate_key': True,
+}
+bapp = SessionMiddleware(bapp, session_opts)
+
+def session_var(name):
+    s = bottle.request.environ.get('beaker.session')  # @UndefinedVariable
+    return s.get(name, None) 
+    
+
+def save_session_var(name, value):
+    s = bottle.request.environ.get('beaker.session')  # @UndefinedVariable
+    s[name] = value
+    s.save()
+    
+@hook('before_request')
+def _connect_db():
+    sqldb.connect()
+
+@hook('after_request')
+def _close_db():
+    if not sqldb.is_closed():
+        sqldb.close()
+
+@error(404)
+def error404(error):    
+    desc = request.url + " invalid url"    
+    return desc
 
 connect_to_db("test",  password="mito")
 regepx = r"[_ \-]"
@@ -85,7 +124,7 @@ def index(ref):
 def index2():
     return template('index2')
 
-run(host='localhost', port=8080)
+run(app=bapp, port=8080, debug=True)
 
 
 
