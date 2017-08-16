@@ -5,7 +5,7 @@ Created on Jun 27, 2017
 '''
 import unittest
 
-from VARDB import  connect_to_test_db, connect_to_db, disconnect
+from VARDB import  connect_to_test_db,  disconnect
 from VARDB.Allele import Allele
 from VARDB.DbIO import DbIO
 from VARDB.Effect import Effect

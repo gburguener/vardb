@@ -5,15 +5,16 @@ Created on May 26, 2017
 '''
 import unittest
 
-from VARDB.VcfSnpeffIO import VcfSnpeffIO
-import StringIO
+from io import StringIO
+
+from VARDB.VcfSnpeffIO import VcfSnpeffIO 
 from VARDB.DbIO import DbIO, VariantCollectionExistsError
-from VARDB import connect_to_db, sqldb, connect_to_test_db, disconnect
+from VARDB import connect_to_test_db, disconnect
 from VARDB.VariantCollection import VariantCollection
 from VARDB.Variant import Variant
 from VARDB.Allele import Allele
 from VARDB.Effect import Effect
-from VARDB.VariantAssignment import VariantAssignment
+
 
 
 
@@ -65,7 +66,7 @@ class TestVcfLoad(unittest.TestCase):
 
    
     def test_repeated(self):       
-        data = StringIO.StringIO(TestVcfLoad.VCF_HEADER +TestVcfLoad.missense +  TestVcfLoad.deletion) 
+        data = StringIO(unicode(TestVcfLoad.VCF_HEADER +TestVcfLoad.missense +  TestVcfLoad.deletion)) 
         
         
         VariantCollection(ref_organism=self.ref_organism, sample=self.sample).save()        
@@ -74,7 +75,7 @@ class TestVcfLoad(unittest.TestCase):
 
     
     def test_load(self):
-        data = StringIO.StringIO(TestVcfLoad.VCF_HEADER +TestVcfLoad.missense +  TestVcfLoad.not_annotated)
+        data = StringIO(unicode(TestVcfLoad.VCF_HEADER +TestVcfLoad.missense +  TestVcfLoad.not_annotated))
         self.db.load_variants(VcfSnpeffIO.parse(data), self.ref_organism, self.sample)
         
         
@@ -89,9 +90,9 @@ class TestVcfLoad(unittest.TestCase):
         self.assertEqual( 0,len(assignments[1].allele.effects))
     
     def test_2_load(self):
-        data = StringIO.StringIO(TestVcfLoad.VCF_HEADER +TestVcfLoad.missense+  TestVcfLoad.not_annotated)
+        data = StringIO(unicode(TestVcfLoad.VCF_HEADER +TestVcfLoad.missense+  TestVcfLoad.not_annotated))
         self.db.load_variants(VcfSnpeffIO.parse(data), self.ref_organism, self.sample)
-        data = StringIO.StringIO(TestVcfLoad.VCF_HEADER +TestVcfLoad.missense2)
+        data = StringIO(unicode(TestVcfLoad.VCF_HEADER +TestVcfLoad.missense2))
         self.db.load_variants(VcfSnpeffIO.parse(data), self.ref_organism, self.sample+"2")
         self.assertEqual(2, VariantCollection.select().count())
         self.assertEqual(2, Variant.select().count())

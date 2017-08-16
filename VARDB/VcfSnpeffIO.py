@@ -7,8 +7,12 @@ hgvs.parser is used to parse http://varnomen.hgvs.org/
 
 '''
 
+import logging
+
 import vcf
 import hgvs.parser
+
+_log = logging.getLogger(__name__)
 
 class SnpeffEffect():
     hgvsparser = hgvs.parser.Parser()
@@ -52,8 +56,8 @@ class SnpeffEffect():
                 else:
                     self.aa_alt = self.hgvs_p.edit.alt 
             except:
-                print self.hgvs_p.edit
-            pass
+                _log.warn( self.hgvs_p.edit)
+            
 
     @classmethod
     def read(cls,ann_str):

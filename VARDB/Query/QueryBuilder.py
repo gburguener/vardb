@@ -5,9 +5,6 @@ Created on Jun 27, 2017
 '''
 from VARDB.VariantAssignment import VariantAssignment
 from VARDB.VariantCollection import VariantCollection
-from VARDB.Effect import Effect
-from VARDB.Allele import Allele
-from VARDB.VariantAnnotation import VariantAnnotation
 from VARDB import connect_to_db, sqldb
 
 

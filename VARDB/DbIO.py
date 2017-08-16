@@ -5,22 +5,21 @@ Created on Jun 22, 2017
 '''
 
 import vcf
+
 from VARDB.VariantCollection import VariantCollection
 from VARDB.VcfSnpeffIO import VcfSnpeffIO
 from VARDB.Variant import Variant
 from VARDB.Allele import Allele
 from VARDB.Effect import Effect
-from VARDB.Allele import DeferredEffect
 from VARDB.VariantAssignment import VariantAssignment
 from VARDB.VariantAnnotation import VariantAnnotation
-from VARDB import sqldb, connect_to_db
-
+from VARDB import sqldb
 from VARDB.Alignment import Alignment
 from VARDB.AlignmentParam import AlignmentParam
 from VARDB.AlnLine import AlnLine
 from VARDB.ProgramRun import ProgramRun
 from VARDB.ProgramParameter import ProgramParameter
-from peewee import fn
+
 
 
 
