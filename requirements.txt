@@ -1,0 +1,6 @@
+peewee==2.10.1
+PyVCF==0.6.8
+hgvs==1.0.0.post3
+bottle==0.12.13
+gevent==1.2.1
+Beaker==1.8.1
