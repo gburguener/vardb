@@ -28,6 +28,11 @@ class SameFilter(object):
         
     
     def filter(self,xtuple,samples):
+#         idxs = []
+#         for vc in self.vcs: 
+#             arr = [i for i,s in enumerate(samples) if s.id == vc.id]
+#             if arr:
+#                 idxs.append(arr[0])                 
         idxs = [ [i for i,s in enumerate(samples) if s.id == vc.id][0]
                  for vc in self.vcs
                ]
@@ -104,8 +109,10 @@ class QueryBuilder(object):
         if variant_collection:
             assert isinstance(variant_collection, VariantCollection)
             self.samples = [variant_collection]
+        else:
+            self.samples = []
         self.filters = []
-        self.samples = []
+        
     
     
     def build_sql(self):
@@ -113,7 +120,7 @@ class QueryBuilder(object):
         joins = ""
         
         for i,sample in enumerate(self.samples):
-            fields +=  "a{num}.alt,e{num}.aa_alt,e{num}.variant_type,".format(num=i)
+            fields +=  "a{num}.alt,ifnull(e{num}.aa_alt,v.ref),e{num}.variant_type,".format(num=i)
             joins +=  QueryBuilder.template_join.format(
                 variant_col_id=sample.id,num=i
             )

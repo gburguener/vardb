@@ -4,5 +4,5 @@ python:
   - "nightly" # currently points to 3.7-dev
 # command to install dependencies
 install: "pip install"
-# command to run tests
-script: "python setup test"
+#  command to run tests 
+script: "python setup.py test"

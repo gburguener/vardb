@@ -62,8 +62,9 @@ class DbIO(object):
  ProgramRun, ProgramParameter, Alignment, AlnLine, AlignmentParam] 
     
     def create_db(self):
-        sqldb.execute_sql('DROP DATABASE ' + sqldb.database + ";")
+        sqldb.execute_sql('DROP DATABASE IF EXISTS ' + sqldb.database + ";")
         sqldb.execute_sql('CREATE DATABASE ' + sqldb.database + ";")
+        self.create_tables()
         
 #         if Allele.table_exists():
 #             with sqldb.atomic():
@@ -74,7 +75,7 @@ class DbIO(object):
 #             if t.table_exists():
 #                 t.drop_table()
         
-        
+    def create_tables(self):
         for t in DbIO.tables:            
             t.create_table()
         sqldb.create_foreign_key(Allele, Allele.main_effect)

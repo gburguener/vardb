@@ -8,7 +8,7 @@ import unittest
 from VARDB.VcfSnpeffIO import VcfSnpeffIO
 import StringIO
 from VARDB.DbIO import DbIO, VariantCollectionExistsError
-from VARDB import connect_to_db, sqldb
+from VARDB import connect_to_db, sqldb, connect_to_test_db, disconnect
 from VARDB.VariantCollection import VariantCollection
 from VARDB.Variant import Variant
 from VARDB.Allele import Allele
@@ -40,20 +40,24 @@ class TestVcfLoad(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
-        connect_to_db(database="test",password='mito')
-        db = DbIO()        
-        db.create_db()  
+        connect_to_test_db()
+        for t in DbIO.tables:            
+            t.create_table()
+    
+    @classmethod
+    def tearDownClass(cls):
+        disconnect()
 
     def setUp(self):
         
         self.db = DbIO() 
         self.ref_organism, self.sample = ("otest", "stest")
-    
+        
         if self.db.exists_sample(self.ref_organism, self.sample):
             self.db.delete_sample(self.ref_organism, self.sample)
         if self.db.exists_sample(self.ref_organism, self.sample + "2"):
             self.db.delete_sample(self.ref_organism, self.sample + "2")
-        
+         
         Allele.update(main_effect=None).execute()
         for t in reversed(DbIO.tables):
             t.delete().execute()

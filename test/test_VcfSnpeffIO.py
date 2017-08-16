@@ -3,10 +3,11 @@ Created on May 26, 2017
 
 @author: eze
 '''
+import StringIO
 import unittest
 
+
 from VARDB.VcfSnpeffIO import VcfSnpeffIO
-import StringIO
 
 
 class TestVcfSnpeffIO(unittest.TestCase):
@@ -48,8 +49,7 @@ class TestVcfSnpeffIO(unittest.TestCase):
             #CHROM  POS     ID      REF     ALT     QUAL    FILTER  INFO    FORMAT  1109_S1_L00
             """
 
-    def setUp(self):
-        pass
+    
 
     def test_parse_all(self):
         for x in [TestVcfSnpeffIO.missense,TestVcfSnpeffIO.upstream,
