@@ -29,7 +29,7 @@ class PyTest(TestCommand):
         sys.exit(errcode)
 
 setup(
-    name='sandman',
+    name='vardb',
     version=VARDB.__version__,
     url='https://github.com/gburguener/vardb',
     license='MIT License',
