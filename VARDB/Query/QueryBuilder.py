@@ -9,7 +9,7 @@ from VARDB.Effect import Effect
 from VARDB.Allele import Allele
 from VARDB.VariantAnnotation import VariantAnnotation
 from VARDB import connect_to_db, sqldb
-import MySQLdb
+
 
 """
 gene filter
