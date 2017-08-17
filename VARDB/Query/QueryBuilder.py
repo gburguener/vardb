@@ -182,7 +182,7 @@ if __name__ == '__main__':
     
     qb.samples.append( VariantCollection.select().where(VariantCollection.sample == "2003_S4_L001").get() )
     for x in qb.tuples():
-        print x
+        print(x)
    
     
     
