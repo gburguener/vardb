@@ -5,11 +5,12 @@ Created on Jun 27, 2017
 '''
 from VARDB.VariantAssignment import VariantAssignment
 from VARDB.VariantCollection import VariantCollection
+from VARDB import connect_to_db, sqldb
 from VARDB.Effect import Effect
 from VARDB.Allele import Allele
 from VARDB.VariantAnnotation import VariantAnnotation
-from VARDB import connect_to_db, sqldb
 import MySQLdb
+
 
 """
 gene filter
@@ -104,8 +105,11 @@ class QueryBuilder(object):
         if variant_collection:
             assert isinstance(variant_collection, VariantCollection)
             self.samples = [variant_collection]
+        else:
+            self.samples = []
         self.filters = []
-        self.samples = []
+       
+
     
     
     def build_sql(self):
@@ -113,7 +117,8 @@ class QueryBuilder(object):
         joins = ""
         
         for i,sample in enumerate(self.samples):
-            fields +=  "a{num}.alt,e{num}.aa_alt,e{num}.variant_type,".format(num=i)
+            fields +=  "a{num}.alt,ifnull(e{num}.aa_alt,v.ref),e{num}.variant_type,".format(num=i)
+
             joins +=  QueryBuilder.template_join.format(
                 variant_col_id=sample.id,num=i
             )
@@ -178,7 +183,8 @@ if __name__ == '__main__':
     
     qb.samples.append( VariantCollection.select().where(VariantCollection.sample == "2003_S4_L001").get() )
     for x in qb.tuples():
-        print x
+        print(x)
+
    
     
     

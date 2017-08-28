@@ -4,27 +4,32 @@ Created on Jun 27, 2017
 @author: eze
 '''
 import unittest
-from VARDB import connect_to_db
-from VARDB.DbIO import DbIO
-from VARDB.VariantCollection import VariantCollection
-from VARDB.Variant import Variant
+
+from VARDB import  connect_to_test_db,  disconnect
 from VARDB.Allele import Allele
+from VARDB.DbIO import DbIO
 from VARDB.Effect import Effect
-from VARDB.VariantAssignment import VariantAssignment
-from VARDB.Query.QueryBuilder import QueryBuilder,SameFilter, SubtractFilter,\
+from VARDB.Query.QueryBuilder import QueryBuilder, SameFilter, SubtractFilter, \
     EffectFilter, VariantFilter
+from VARDB.Variant import Variant
+from VARDB.VariantAssignment import VariantAssignment
+from VARDB.VariantCollection import VariantCollection
 
 
 class TestQueries(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        connect_to_db(database="test", password='mito')
-        db = DbIO()   
-        print "creando la base..."     
-#         db.create_db()
-        print "base creada"
-#         cls.create_data()
+        connect_to_test_db()
+        
+        for t in DbIO.tables:            
+            t.create_table()
+        cls.create_data()
+        
+    @classmethod
+    def tearDownClass(cls):
+        disconnect()
+        
         
     @classmethod
     def create_data(cls):
@@ -208,16 +213,7 @@ class TestQueries(unittest.TestCase):
         self.vc1 = VariantCollection.get((VariantCollection.ref_organism==ref_org) & (VariantCollection.sample=="A"))        
         self.vc2 = VariantCollection.get((VariantCollection.ref_organism==ref_org) & (VariantCollection.sample=="B"))
         self.vc3 = VariantCollection.get((VariantCollection.ref_organism==ref_org) & (VariantCollection.sample=="C"))
-               
-               
-
-        
-
-    
-        
-       
-
-
+      
     def tearDown(self):
         pass
 

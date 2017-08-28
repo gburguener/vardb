@@ -5,22 +5,21 @@ Created on Jun 22, 2017
 '''
 
 import vcf
+
 from VARDB.VariantCollection import VariantCollection
 from VARDB.VcfSnpeffIO import VcfSnpeffIO
 from VARDB.Variant import Variant
 from VARDB.Allele import Allele
 from VARDB.Effect import Effect
-from VARDB.Allele import DeferredEffect
 from VARDB.VariantAssignment import VariantAssignment
 from VARDB.VariantAnnotation import VariantAnnotation
-from VARDB import sqldb, connect_to_db
-
+from VARDB import sqldb
 from VARDB.Alignment import Alignment
 from VARDB.AlignmentParam import AlignmentParam
 from VARDB.AlnLine import AlnLine
 from VARDB.ProgramRun import ProgramRun
 from VARDB.ProgramParameter import ProgramParameter
-from peewee import fn
+
 
 
 
@@ -62,8 +61,9 @@ class DbIO(object):
  ProgramRun, ProgramParameter, Alignment, AlnLine, AlignmentParam] 
     
     def create_db(self):
-        sqldb.execute_sql('DROP DATABASE ' + sqldb.database + ";")
+        sqldb.execute_sql('DROP DATABASE IF EXISTS ' + sqldb.database + ";")
         sqldb.execute_sql('CREATE DATABASE ' + sqldb.database + ";")
+        self.create_tables()
         
 #         if Allele.table_exists():
 #             with sqldb.atomic():
@@ -74,7 +74,7 @@ class DbIO(object):
 #             if t.table_exists():
 #                 t.drop_table()
         
-        
+    def create_tables(self):
         for t in DbIO.tables:            
             t.create_table()
         sqldb.create_foreign_key(Allele, Allele.main_effect)

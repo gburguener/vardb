@@ -1,11 +1,15 @@
-from peewee import MySQLDatabase, Model
-
-from peewee import Proxy
-from playhouse.shortcuts import RetryOperationalError
+from datetime import date, datetime
 import json
 
+from peewee import MySQLDatabase, Model, SqliteDatabase
+from peewee import Proxy
+from playhouse.shortcuts import RetryOperationalError
 
-from datetime import date, datetime
+import VARDB
+
+
+__version__ = "0.0.1"
+
 
 def json_serial(obj):
     """JSON serializer for objects not serializable by default json code"""
@@ -23,14 +27,29 @@ class VARDBBase(Model):
         return self.__str__()
 
 sqldb =  Proxy() 
+deferredEffectSetted = False
+
+
+def wiredb(db):
+    from VARDB.Effect import Effect
+    from VARDB.Allele import DeferredEffect
+    if not VARDB.deferredEffectSetted:
+        DeferredEffect.set_model(Effect)
+        VARDB.deferredEffectSetted = True
+    sqldb.initialize(db)
 
 def connect_to_db(database='vardb',user='root',password='',engine=MySQLDatabase):
     class MyRetryDB(RetryOperationalError, engine):
         pass
-    from VARDB.Effect import Effect
-    from VARDB.Allele import DeferredEffect
-    DeferredEffect.set_model(Effect)
-    mysqldb = MyRetryDB(database, user=user, password=password)
-    sqldb.initialize(mysqldb)
+    db = MyRetryDB(database, user=user, password=password)
+    wiredb(db)
+
+def connect_to_test_db():
+    db = SqliteDatabase(":memory:")  
+    wiredb(db)
+
+def disconnect():
+    VARDB.sqldb.close()    
+    
     
     
