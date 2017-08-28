@@ -6,6 +6,10 @@ Created on Jun 27, 2017
 from VARDB.VariantAssignment import VariantAssignment
 from VARDB.VariantCollection import VariantCollection
 from VARDB import connect_to_db, sqldb
+from VARDB.Effect import Effect
+from VARDB.Allele import Allele
+from VARDB.VariantAnnotation import VariantAnnotation
+import MySQLdb
 
 
 """
@@ -25,11 +29,6 @@ class SameFilter(object):
         
     
     def filter(self,xtuple,samples):
-#         idxs = []
-#         for vc in self.vcs: 
-#             arr = [i for i,s in enumerate(samples) if s.id == vc.id]
-#             if arr:
-#                 idxs.append(arr[0])                 
         idxs = [ [i for i,s in enumerate(samples) if s.id == vc.id][0]
                  for vc in self.vcs
                ]
@@ -109,7 +108,8 @@ class QueryBuilder(object):
         else:
             self.samples = []
         self.filters = []
-        
+       
+
     
     
     def build_sql(self):
@@ -118,6 +118,7 @@ class QueryBuilder(object):
         
         for i,sample in enumerate(self.samples):
             fields +=  "a{num}.alt,ifnull(e{num}.aa_alt,v.ref),e{num}.variant_type,".format(num=i)
+
             joins +=  QueryBuilder.template_join.format(
                 variant_col_id=sample.id,num=i
             )
@@ -183,6 +184,7 @@ if __name__ == '__main__':
     qb.samples.append( VariantCollection.select().where(VariantCollection.sample == "2003_S4_L001").get() )
     for x in qb.tuples():
         print(x)
+
    
     
     
